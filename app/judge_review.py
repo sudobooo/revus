@@ -1,7 +1,7 @@
 from langchain.prompts import PromptTemplate
 from openai import OpenAIError
-
-from shared_llm import get_llm
+from app.shared_llm import get_llm
+import logging
 
 def judge_review(review_text):
     llm = get_llm()
@@ -33,5 +33,5 @@ def judge_review(review_text):
         assessment = chain.invoke({'review': review_text})
         return assessment.content if hasattr(assessment, 'content') else ""
     except OpenAIError as e:
-        print(f"Ошибка при оценке качества ревью: {e}")
+        logging.error(f"Ошибка при оценке качества ревью: {e}")
         return "Не удалось провести оценку"

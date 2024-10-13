@@ -1,13 +1,14 @@
+import logging
 from langchain.prompts import PromptTemplate
 from openai import OpenAIError
-from shared_llm import get_llm
+from app.shared_llm import get_llm
 
 def read_file_content(file_path):
     try:
         with open(file_path, 'r') as file:
             return file.read()
     except Exception as e:
-        print(f"Ошибка при чтении файла {file_path}: {e}")
+        logging.error(f"Ошибка при чтении файла {file_path}: {e}")
         return ""
 
 def review_code(file_content):
@@ -34,7 +35,7 @@ def review_code(file_content):
         review = chain.invoke({'code': file_content})
         return review.content if hasattr(review, 'content') else ""
     except OpenAIError as e:
-        print(f"Ошибка при проведении ревью: {e}")
+        logging.error(f"Ошибка при проведении ревью: {e}")
         return ""
 
 def review_code_with_hints(file_content, assessment):
@@ -61,5 +62,5 @@ def review_code_with_hints(file_content, assessment):
         review = chain.invoke({'code': file_content, 'assessment': assessment})
         return review.content if hasattr(review, 'content') else ""
     except OpenAIError as e:
-        print(f"Ошибка при повторном ревью: {e}")
+        logging.error(f"Ошибка при повторном ревью: {e}")
         return ""

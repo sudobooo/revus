@@ -2,18 +2,19 @@ from setuptools import setup, find_packages
 
 setup(
     name='automated_pr_review_app',
-    version='0.1',
+    version='0.3',
     packages=find_packages(),
     install_requires=[
         'gitpython',
         'openai',
         'langchain',
         'langchain-openai',
-        'python-dotenv'
+        'python-dotenv',
+        'toml'
     ],
     entry_points={
         'console_scripts': [
-            'run_auto_review=auto_review:run_auto_review'
+            'run_auto_review=cli.auto_review:run_auto_review'
         ]
     },
     author='Your Name',
