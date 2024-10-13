@@ -10,4 +10,4 @@ def get_llm():
     if not api_key:
         logging.error("Необходимо создать файл config.toml и добавить туда свой OPENAI_API_KEY")
         sys.exit(1)
-    return ChatOpenAI(model_name=config.get("model_name", 'gpt-4'), openai_api_key=api_key)
+    return ChatOpenAI(model_name=config.get("model_name", 'gpt-4o-mini'), openai_api_key=api_key)
