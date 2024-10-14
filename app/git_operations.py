@@ -1,3 +1,5 @@
+# app/git_operations.py
+
 import logging
 import os
 from git import Repo, InvalidGitRepositoryError, GitCommandError
@@ -11,7 +13,7 @@ def get_changed_files(file_types=None):
         staged_files = list({item.a_path for item in repo.index.diff("HEAD", staged=True)})
         staged_files = [file for file in staged_files if os.path.exists(file)]
     except (InvalidGitRepositoryError, GitCommandError) as e:
-        logging.error(f"Ошибка работы с репозиторием Git: {e}")
+        logging.error(f"Error working with the Git repository: {e}")
         return []
 
     file_types = file_types or config.get("file_types", [".py"])

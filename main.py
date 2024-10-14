@@ -1,3 +1,5 @@
+# main.py
+
 import logging
 from cli.auto_review import run_auto_review
 

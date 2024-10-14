@@ -1,3 +1,5 @@
+# app/code_review.py
+
 import logging
 from langchain.prompts import PromptTemplate
 from openai import OpenAIError
@@ -8,23 +10,23 @@ def read_file_content(file_path):
         with open(file_path, 'r') as file:
             return file.read()
     except Exception as e:
-        logging.error(f"Ошибка при чтении файла {file_path}: {e}")
+        logging.error(f"Error reading file {file_path}: {e}")
         return ""
 
 def review_code(file_content):
     llm = get_llm()
     prompt_template = '''
-    Проведи качественное ревью следующего кода:
+    Perform a thorough review of the following code:
 
     {code}
 
-    Пожалуйста, учти следующее:
-    1. Обрати внимание на возможные ошибки, которые могут привести к сбоям или неправильному поведению.
-    2. Предложи улучшения по производительности, стилю и читабельности.
-    3. Убедись, что код соответствует лучшим практикам программирования для данного языка.
-    4. Если в коде присутствуют уязвимости безопасности, укажи на них.
+    Please consider the following:
+    1. Pay attention to any potential issues that could lead to crashes or incorrect behavior.
+    2. Suggest improvements in terms of performance, style, and readability.
+    3. Ensure the code follows best programming practices for the given language.
+    4. If there are any security vulnerabilities in the code, point them out.
 
-    Представь конкретные рекомендации по исправлению или улучшению.
+    Provide specific recommendations for fixing or improving the code.
     '''
     prompt = PromptTemplate(
         input_variables=['code'],
@@ -35,23 +37,23 @@ def review_code(file_content):
         review = chain.invoke({'code': file_content})
         return review.content if hasattr(review, 'content') else ""
     except OpenAIError as e:
-        logging.error(f"Ошибка при проведении ревью: {e}")
+        logging.error(f"Error during code review: {e}")
         return ""
 
 def review_code_with_hints(file_content, assessment):
     llm = get_llm()
     prompt_template = '''
-    Проведи ревью следующего кода:
+    Review the following code:
 
     {code}
 
-    Обрати особое внимание на следующие комментарии по предыдущему ревью:
+    Pay special attention to the following comments from the previous review:
     {assessment}
 
-    Пожалуйста, учти:
-    1. Исправь недостатки, указанные в предыдущем ревью, и улучшай рекомендации.
-    2. Укажи на любые другие возможные ошибки, которые были упущены.
-    3. Обеспечь ясность, полезность и полноту рекомендаций.
+    Please consider the following:
+    1. Address the deficiencies highlighted in the previous review and improve the recommendations.
+    2. Point out any other potential issues that may have been missed.
+    3. Ensure clarity, usefulness, and completeness of the recommendations.
     '''
     prompt = PromptTemplate(
         input_variables=['code', 'assessment'],
@@ -62,5 +64,5 @@ def review_code_with_hints(file_content, assessment):
         review = chain.invoke({'code': file_content, 'assessment': assessment})
         return review.content if hasattr(review, 'content') else ""
     except OpenAIError as e:
-        logging.error(f"Ошибка при повторном ревью: {e}")
+        logging.error(f"Error during follow-up review: {e}")
         return ""

@@ -1,3 +1,5 @@
+# app/judge_review.py
+
 from langchain.prompts import PromptTemplate
 from openai import OpenAIError
 from app.shared_llm import get_llm
@@ -6,22 +8,22 @@ import logging
 def judge_review(review_text):
     llm = get_llm()
     prompt_template = '''
-    Пожалуйста, оцени качество следующего ревью кода:
+    Please evaluate the quality of the following code review:
 
     {review}
 
-    Критерии оценки:
-    - Насколько ясно и чётко ревью указывает на ошибки? (Оценка от 0 до 10)
-    - Насколько полезны предложения по улучшению кода? (Оценка от 0 до 10)
-    - Насколько полно ревью покрывает возможные проблемы в коде? (Оценка от 0 до 10)
+    Evaluation criteria:
+    - How clearly and precisely does the review point out errors? (Score from 0 to 10)
+    - How useful are the suggestions for improving the code? (Score from 0 to 10)
+    - How comprehensive is the review in covering potential issues in the code? (Score from 0 to 10)
 
-    Верни результат в следующем формате:
+    Return the result in the following format:
     {{
-        "clarity": <оценка>,
-        "usefulness": <оценка>,
-        "coverage": <оценка>,
-        "overall": <общая оценка от 0 до 10>,
-        "comments": "<комментарии по улучшению ревью>"
+        "clarity": <score>,
+        "usefulness": <score>,
+        "coverage": <score>,
+        "overall": <overall score from 0 to 10>,
+        "comments": "<comments on improving the review>"
     }}
     '''
     prompt = PromptTemplate(
@@ -33,5 +35,5 @@ def judge_review(review_text):
         assessment = chain.invoke({'review': review_text})
         return assessment.content if hasattr(assessment, 'content') else ""
     except OpenAIError as e:
-        logging.error(f"Ошибка при оценке качества ревью: {e}")
-        return "Не удалось провести оценку"
+        logging.error(f"Error during review quality assessment: {e}")
+        return "Failed to perform assessment"
