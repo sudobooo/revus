@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='automated_pr_review_app',
-    version='0.3',
+    version='0.5',
     packages=find_packages(),
     install_requires=[
         'gitpython',
@@ -16,7 +16,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'run_auto_review=cli.auto_review:run_auto_review'
+            'run_auto_review=main:main'
         ]
     },
     author='Your Name',

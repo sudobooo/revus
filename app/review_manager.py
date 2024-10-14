@@ -2,70 +2,42 @@
 
 import logging
 import json
-from app.code_review import review_code, review_code_with_hints, read_file_content
-from app.judge_review import judge_review
-from app.assess_review_quality import assess_review_quality
-from app.utils import get_user_choice, generate_final_report
+from app.code_reviewer import CodeReviewer
+from app.review_assessor import ReviewAssessor
+from app.file_reader import FileReader
+from app.utils import Utils
 
-def process_file(file):
-    logging.info(f"\nReviewing file: {file}")
-    file_content = read_file_content(file)
-    print(file_content)
-    if not file_content:
-        return
+class ReviewManager:
 
-    assessment_data = handle_review(file_content, file)
-    if assessment_data is None:
-        return
+    def __init__(self):
+        self.code_reviewer = CodeReviewer()
+        self.review_assessor = ReviewAssessor()
 
-    if assess_review_quality(assessment_data) == 'low':
-        logging.info(f"\nReview for file {file} failed the assessment.")
-        user_choice = get_user_choice()
+    def process_file(self, file_path):
+        file_content = FileReader.read_file_content(file_path)
+        if not file_content:
+            return
 
-        if user_choice == 'r':
-            assessment_data = handle_repeated_review(file_content, assessment_data, file)
-            if assessment_data is None:
+        review = self.code_reviewer.review_code(file_content)
+        logging.info(f"\nReview results for file {file_path}:\n{review}")
+
+        while True:
+            assessment = self.review_assessor.judge_review(review)
+            try:
+                assessment_data = json.loads(assessment)
+            except json.JSONDecodeError:
+                logging.error(f"Error processing assessment for file {file_path}: {assessment}")
                 return
-            if assess_review_quality(assessment_data) != 'low':
-                logging.info(f"\nReview for file {file} passed the assessment.")
-            else:
-                logging.info(f"\nReview for file {file} still failed the assessment. Providing final report.")
-                final_report = generate_final_report(assessment_data)
-                logging.info(final_report)
-        elif user_choice == 'o':
-            logging.info(f"\nProviding final report for file {file}.")
-            final_report = generate_final_report(assessment_data)
-            logging.info(final_report)
-        elif user_choice == 'q':
-            logging.info("Review process was interrupted by the user.")
-    else:
-        logging.info(f"\nReview for file {file} passed the assessment successfully.")
 
-def handle_review(file_content, file):
-    review = review_code(file_content)
-    logging.info(f"\nReview results for file {file}:")
-    logging.info(review)
-    assessment = judge_review(review)
-    try:
-        assessment_data = json.loads(assessment)
-    except json.JSONDecodeError:
-        logging.error(f"\nError processing assessment for file {file}: {assessment}")
-        return None
-    logging.info(f"\nQuality assessment of the review for file {file}:")
-    logging.info(json.dumps(assessment_data, indent=4, ensure_ascii=False))
-    return assessment_data
+            logging.info(f"\nQuality assessment of the review for file {file_path}:\n{json.dumps(assessment_data, indent=4, ensure_ascii=False)}")
 
-def handle_repeated_review(file_content, assessment_data, file):
-    logging.info(f"\nStarting repeated review for file {file} considering previous comments.")
-    review = review_code_with_hints(file_content, assessment_data['comments'])
-    logging.info(f"\nRepeated review results for file {file}:")
-    logging.info(review)
-    assessment = judge_review(review)
-    try:
-        assessment_data = json.loads(assessment)
-    except json.JSONDecodeError:
-        logging.error(f"\nError processing assessment for file {file}: {assessment}")
-        return None
-    logging.info(f"\nQuality assessment of the repeated review for file {file}:")
-    logging.info(json.dumps(assessment_data, indent=4, ensure_ascii=False))
-    return assessment_data
+            user_choice = Utils.get_user_choice()
+
+            if user_choice == 'r':
+                review = self.code_reviewer.review_code(file_content, assessment_data.get('comments'))
+                logging.info(f"\nRe-review results for file {file_path}:\n{review}")
+            elif user_choice == 'c':
+                break
+            elif user_choice == 'q':
+                logging.info("Review process was interrupted by the user.")
+                exit()
