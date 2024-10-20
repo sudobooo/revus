@@ -6,3 +6,6 @@ lint:
 
 lint-fix:
 	poetry run ruff check --fix .
+
+lint-format:
+	poetry run ruff format .

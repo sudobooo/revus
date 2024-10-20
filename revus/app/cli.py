@@ -4,6 +4,7 @@ from .review_manager import ReviewManager
 from .git_operations import get_changed_files
 from .logger import log_info, log_success
 
+
 def review_changed_files():
     files_to_review = get_changed_files()
 

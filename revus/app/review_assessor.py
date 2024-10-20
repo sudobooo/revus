@@ -5,8 +5,9 @@ from openai import OpenAIError
 from .llm_client import get_llm
 from .logger import log_error
 
+
 class ReviewAssessor:
-    PROMPT_TEMPLATE = '''
+    PROMPT_TEMPLATE = """
     Please evaluate the quality of the following code review:
 
     {review}
@@ -24,20 +25,19 @@ class ReviewAssessor:
         "overall": <overall score from 0 to 10>,
         "comments": "<comments on improving the review>"
     }}
-    '''
+    """
 
     def __init__(self):
         self.llm = get_llm()
         self.prompt = PromptTemplate(
-            input_variables=['review'],
-            template=self.PROMPT_TEMPLATE
+            input_variables=["review"], template=self.PROMPT_TEMPLATE
         )
 
     def judge_review(self, review_text):
         chain = self.prompt | self.llm
         try:
-            assessment = chain.invoke({'review': review_text})
-            return assessment.content if hasattr(assessment, 'content') else ""
+            assessment = chain.invoke({"review": review_text})
+            return assessment.content if hasattr(assessment, "content") else ""
         except OpenAIError as e:
             log_error(f"Error during review quality assessment: {e}")
             return ""

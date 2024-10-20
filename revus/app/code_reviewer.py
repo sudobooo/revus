@@ -5,8 +5,9 @@ from openai import OpenAIError
 from .llm_client import get_llm
 from .logger import log_error
 
+
 class CodeReviewer:
-    BASIC_PROMPT = '''
+    BASIC_PROMPT = """
     Perform a thorough review of the following code:
 
     {code}
@@ -18,9 +19,9 @@ class CodeReviewer:
     4. If there are any security vulnerabilities in the code, point them out.
 
     Provide specific recommendations for fixing or improving the code.
-    '''
+    """
 
-    HINTED_PROMPT = '''
+    HINTED_PROMPT = """
     Review the following code:
 
     {code}
@@ -32,7 +33,7 @@ class CodeReviewer:
     1. Address the deficiencies highlighted in the previous assessment and improve the recommendations.
     2. Point out any other potential issues that may have been missed.
     3. Ensure clarity, usefulness, and completeness of the recommendations.
-    '''
+    """
 
     def __init__(self):
         self.llm = get_llm()
@@ -40,19 +41,18 @@ class CodeReviewer:
     def review_code(self, code, comments=None):
         if comments:
             prompt_template = self.HINTED_PROMPT
-            input_variables = {'code': code, 'comments': comments}
+            input_variables = {"code": code, "comments": comments}
         else:
             prompt_template = self.BASIC_PROMPT
-            input_variables = {'code': code}
+            input_variables = {"code": code}
 
         prompt = PromptTemplate(
-            input_variables=list(input_variables.keys()),
-            template=prompt_template
+            input_variables=list(input_variables.keys()), template=prompt_template
         )
         chain = prompt | self.llm
         try:
             review = chain.invoke(input_variables)
-            return review.content if hasattr(review, 'content') else ""
+            return review.content if hasattr(review, "content") else ""
         except OpenAIError as e:
             log_error(f"Error during code review: {e}")
             return ""
