@@ -4,30 +4,29 @@ import os
 import toml
 import logging
 
-class Config:
-    _instance = None
+_config_instance = None
 
-    def __init__(self):
-        self.config = self.load_config()
-
-    @staticmethod
-    def get_instance():
-        if Config._instance is None:
-            Config._instance = Config()
-        return Config._instance
-
-    def load_config(self):
-        config_path = os.path.join(os.getcwd(), "config.toml")
-        if os.path.exists(config_path):
-            try:
-                with open(config_path, "r") as config_file:
-                    return toml.load(config_file)
-            except Exception as e:
-                logging.error(f"Error loading configuration file: {e}")
-                return {}
-        else:
-            logging.warning("Configuration file not found, default values will be used.")
+def _load_config():
+    config_path = os.path.join(os.getcwd(), "config.toml")
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, "r") as config_file:
+                return toml.load(config_file)
+        except Exception as e:
+            logging.error(f"Error loading configuration file: {e}")
             return {}
+    else:
+        logging.warning("Configuration file not found, default values will be used.")
+        return {}
 
-    def get(self, key, default=None):
-        return self.config.get(key, default)
+def _get_config_instance():
+    global _config_instance
+    if _config_instance is None:
+        _config_instance = _load_config()
+    return _config_instance
+
+def get(key, default=None):
+    config = _get_config_instance()
+    return config.get(key, default)
+
+__all__ = ['get']

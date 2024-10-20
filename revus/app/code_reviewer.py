@@ -3,7 +3,7 @@
 import logging
 from langchain.prompts import PromptTemplate
 from openai import OpenAIError
-from .llm_client import LLMClient
+from .llm_client import get_llm
 
 class CodeReviewer:
     BASIC_PROMPT = '''
@@ -35,7 +35,7 @@ Please consider the following:
 '''
 
     def __init__(self):
-        self.llm = LLMClient.get_instance().get_llm()
+        self.llm = get_llm()
 
     def review_code(self, code, comments=None):
         if comments:

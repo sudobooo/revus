@@ -2,7 +2,7 @@
 
 import logging
 from .review_manager import ReviewManager
-from .git_operations import GitOperations
+from .git_operations import get_changed_files
 
 class AutoReviewCLI:
 
@@ -10,7 +10,7 @@ class AutoReviewCLI:
         self.review_manager = ReviewManager()
 
     def run(self):
-        files_to_review = GitOperations.get_changed_files()
+        files_to_review = get_changed_files()
         if not files_to_review:
             logging.info("No files to review.")
             return

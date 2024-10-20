@@ -4,8 +4,8 @@ import logging
 import json
 from .code_reviewer import CodeReviewer
 from .review_assessor import ReviewAssessor
-from .file_reader import FileReader
-from .utils import Utils
+from .file_reader import read_file_content
+from .utils import get_user_choice
 
 class ReviewManager:
 
@@ -14,7 +14,7 @@ class ReviewManager:
         self.review_assessor = ReviewAssessor()
 
     def process_file(self, file_path):
-        file_content = FileReader.read_file_content(file_path)
+        file_content = read_file_content(file_path)
         if not file_content:
             return
 
@@ -31,7 +31,7 @@ class ReviewManager:
 
             logging.info(f"\nQuality assessment of the review for file {file_path}:\n{json.dumps(assessment_data, indent=4, ensure_ascii=False)}")
 
-            user_choice = Utils.get_user_choice()
+            user_choice = get_user_choice()
 
             if user_choice == 'r':
                 review = self.code_reviewer.review_code(file_content, assessment_data.get('comments'))
