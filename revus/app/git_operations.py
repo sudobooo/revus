@@ -3,7 +3,7 @@
 import logging
 import os
 from git import Repo, InvalidGitRepositoryError, GitCommandError
-from app.config import Config
+from .config import Config
 
 class GitOperations:
 

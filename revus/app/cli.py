@@ -1,8 +1,8 @@
 # cli/cli.py
 
 import logging
-from app.review_manager import ReviewManager
-from app.git_operations import GitOperations
+from .review_manager import ReviewManager
+from .git_operations import GitOperations
 
 class AutoReviewCLI:
 

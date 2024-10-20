@@ -2,10 +2,10 @@
 
 import logging
 import json
-from app.code_reviewer import CodeReviewer
-from app.review_assessor import ReviewAssessor
-from app.file_reader import FileReader
-from app.utils import Utils
+from .code_reviewer import CodeReviewer
+from .review_assessor import ReviewAssessor
+from .file_reader import FileReader
+from .utils import Utils
 
 class ReviewManager:
 

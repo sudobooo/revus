@@ -1,7 +1,7 @@
 # main.py
 
 import logging
-from app.cli import AutoReviewCLI
+from .app.cli import AutoReviewCLI
 
 
 def main():

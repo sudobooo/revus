@@ -3,7 +3,7 @@
 import logging
 from langchain.prompts import PromptTemplate
 from openai import OpenAIError
-from app.llm_client import LLMClient
+from .llm_client import LLMClient
 
 class CodeReviewer:
     BASIC_PROMPT = '''

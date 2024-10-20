@@ -3,7 +3,7 @@
 import sys
 import logging
 from langchain_openai import ChatOpenAI
-from app.config import Config
+from .config import Config
 
 class LLMClient:
     _instance = None
