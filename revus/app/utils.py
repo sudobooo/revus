@@ -1,6 +1,5 @@
 # app/utils.py
 
-import json
 import logging
 
 def get_user_choice():
