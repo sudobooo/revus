@@ -1,38 +1,38 @@
 # app/code_review.py
 
-import logging
 from langchain.prompts import PromptTemplate
 from openai import OpenAIError
 from .llm_client import get_llm
+from .logger import log_error
 
 class CodeReviewer:
     BASIC_PROMPT = '''
-Perform a thorough review of the following code:
+    Perform a thorough review of the following code:
 
-{code}
+    {code}
 
-Please consider the following:
-1. Pay attention to any potential issues that could lead to crashes or incorrect behavior.
-2. Suggest improvements in terms of performance, style, and readability.
-3. Ensure the code follows best programming practices for the given language.
-4. If there are any security vulnerabilities in the code, point them out.
+    Please consider the following:
+    1. Pay attention to any potential issues that could lead to crashes or incorrect behavior.
+    2. Suggest improvements in terms of performance, style, and readability.
+    3. Ensure the code follows best programming practices for the given language.
+    4. If there are any security vulnerabilities in the code, point them out.
 
-Provide specific recommendations for fixing or improving the code.
-'''
+    Provide specific recommendations for fixing or improving the code.
+    '''
 
     HINTED_PROMPT = '''
-Review the following code:
+    Review the following code:
 
-{code}
+    {code}
 
-Pay special attention to the following comments from the previous assessment:
-{comments}
+    Pay special attention to the following comments from the previous assessment:
+    {comments}
 
-Please consider the following:
-1. Address the deficiencies highlighted in the previous assessment and improve the recommendations.
-2. Point out any other potential issues that may have been missed.
-3. Ensure clarity, usefulness, and completeness of the recommendations.
-'''
+    Please consider the following:
+    1. Address the deficiencies highlighted in the previous assessment and improve the recommendations.
+    2. Point out any other potential issues that may have been missed.
+    3. Ensure clarity, usefulness, and completeness of the recommendations.
+    '''
 
     def __init__(self):
         self.llm = get_llm()
@@ -54,5 +54,5 @@ Please consider the following:
             review = chain.invoke(input_variables)
             return review.content if hasattr(review, 'content') else ""
         except OpenAIError as e:
-            logging.error(f"Error during code review: {e}")
+            log_error(f"Error during code review: {e}")
             return ""

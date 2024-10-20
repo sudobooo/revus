@@ -1,13 +1,10 @@
 # main.py
 
-import logging
-from .app.cli import AutoReviewCLI
+from .app.cli import review_changed_files
 
 
 def main():
-    logging.basicConfig(level=logging.INFO)
-    auto_review_cli = AutoReviewCLI()
-    auto_review_cli.run()
+    review_changed_files()
 
 if __name__ == "__main__":
     main()

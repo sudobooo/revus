@@ -2,7 +2,7 @@
 
 import os
 import toml
-import logging
+from .logger import log_error, log_warning
 
 _config_instance = None
 
@@ -13,10 +13,10 @@ def _load_config():
             with open(config_path, "r") as config_file:
                 return toml.load(config_file)
         except Exception as e:
-            logging.error(f"Error loading configuration file: {e}")
+            log_error(f"Error loading configuration file: {e}")
             return {}
     else:
-        logging.warning("Configuration file not found, default values will be used.")
+        log_warning("Configuration file not found, default values will be used.")
         return {}
 
 def _get_config_instance():
