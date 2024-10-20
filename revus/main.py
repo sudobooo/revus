@@ -1,10 +1,10 @@
 # main.py
 
-from .app.cli import review_changed_files
+from .app.cli import review_files
 
 
 def main():
-    review_changed_files()
+    review_files()
 
 
 if __name__ == "__main__":
