@@ -1,13 +1,19 @@
 # app/code_review.py
 
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 from openai import OpenAIError
 from .llm_client import get_llm
 from .logger import log_error
 
 
 class CodeReviewer:
-    BASIC_PROMPT = """
+    SYSTEM_REVIEW_PROMPT = """
+    You are an expert code reviewer. Provide in-depth analysis and recommendations for the given code.
+    Use best practices and give specific suggestions for improvement.
+    """
+
+    REVIEW_PROMPT = """
     Perform a thorough review of the following code:
 
     {code}
@@ -21,7 +27,7 @@ class CodeReviewer:
     Provide specific recommendations for fixing or improving the code.
     """
 
-    HINTED_PROMPT = """
+    HINTED_REVIEW_PROMPT = """
     Review the following code:
 
     {code}
@@ -37,22 +43,25 @@ class CodeReviewer:
 
     def __init__(self):
         self.llm = get_llm()
+        self.parser = StrOutputParser()
 
     def review_code(self, code, comments=None):
         if comments:
-            prompt_template = self.HINTED_PROMPT
+            prompt = self.HINTED_REVIEW_PROMPT
             input_variables = {"code": code, "comments": comments}
         else:
-            prompt_template = self.BASIC_PROMPT
+            prompt = self.REVIEW_PROMPT
             input_variables = {"code": code}
 
-        prompt = PromptTemplate(
-            input_variables=list(input_variables.keys()), template=prompt_template
-        )
-        chain = prompt | self.llm
+        messages = [("system", self.SYSTEM_REVIEW_PROMPT), ("user", prompt)]
+
+        prompt_template = ChatPromptTemplate.from_messages(messages)
+
+        chain = prompt_template | self.llm | self.parser
+
         try:
             review = chain.invoke(input_variables)
-            return review.content if hasattr(review, "content") else ""
+            return review
         except OpenAIError as e:
             log_error(f"Error during code review: {e}")
             return ""
