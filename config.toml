@@ -1,6 +1,8 @@
 OPENAI_API_KEY = ""
 file_types = [".py"]
+language = "russian"
 exclude_paths = [
-    "__init__.py",
-    "setup.py"
+    "__init__.py"
 ]
+custom_rules = """
+"""

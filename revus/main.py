@@ -1,6 +1,6 @@
 # main.py
 
-from .app.cli import review_files
+from .app.review_executor import review_files
 
 
 def main():

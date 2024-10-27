@@ -5,53 +5,97 @@ from langchain_core.output_parsers import StrOutputParser
 from openai import OpenAIError
 from .llm_client import get_llm
 from .logger import log_error
+from .config import get_config
 
 
 class CodeReviewer:
     SYSTEM_REVIEW_PROMPT = """
-    You are an expert code reviewer. Provide in-depth analysis and recommendations for the given code.
-    Use best practices and give specific suggestions for improvement.
+    You are a code reviewer tasked with reviewing changes in a pull request (PR).
+    Your goal is to provide a thorough, constructive, and prioritized review of the changes.
     """
 
     REVIEW_PROMPT = """
-    Perform a thorough review of the following code:
+    Follow these instructions carefully:
 
-    {code}
+    1. First, review the full context of the file where changes were made (if provided):
 
-    Please consider the following:
-    1. Pay attention to any potential issues that could lead to crashes or incorrect behavior.
-    2. Suggest improvements in terms of performance, style, and readability.
-    3. Ensure the code follows best programming practices for the given language.
-    4. If there are any security vulnerabilities in the code, point them out.
+    <full_file_context>
+    {full_file_context}
+    </full_file_context>
 
-    Provide specific recommendations for fixing or improving the code.
-    """
+    2. Now, examine the specific changes made in the PR:
 
-    HINTED_REVIEW_PROMPT = """
-    Review the following code:
+    <file_changes>
+    {file_changes}
+    </file_changes>
 
-    {code}
+    3. Consider any custom rules provided for this review:
 
-    Pay special attention to the following comments from the previous assessment:
-    {comments}
+    <custom_rules>
+    {custom_rules}
+    </custom_rules>
 
-    Please consider the following:
-    1. Address the deficiencies highlighted in the previous assessment and improve the recommendations.
-    2. Point out any other potential issues that may have been missed.
-    3. Ensure clarity, usefulness, and completeness of the recommendations.
+    4. Conduct your review based on the following criteria:
+
+    a) Code clarity and context alignment
+    b) Readability and comprehension
+    c) Code complexity and structure
+    d) Potential vulnerabilities
+    e) Performance considerations
+
+    5. For each issue you identify, format your review as follows:
+
+    <review_item>
+    <code_section>
+    [Insert the relevant code section here]
+    </code_section>
+    <comment>
+    [Your review comment goes here. Be polite, constructive, and explain the importance of your suggestion.]
+    </comment>
+    <priority>
+    [Assign a priority: High, Medium, or Low]
+    </priority>
+    </review_item>
+
+    6. Additional guidelines:
+
+    - Prioritize your comments by criticality.
+    - Be polite and constructive in your feedback.
+    - Suggest directions for improvement rather than prescribing specific solutions.
+    - Explain how your suggestions contribute to better code quality.
+    - Keep in mind that your review will be read in the command line, so format accordingly.
+
+    7. After reviewing all changes, provide a summary of your review:
+
+    <review_summary>
+    [Summarize the key points of your review, highlighting the most critical issues and overall impressions.]
+    </review_summary>
+
+    Always answer in this language: {language}.
+
+    Your response should always end with the </review_summary> tag. Be sure to keep this in mind before you start.
+
+    Remember to focus on the changes made in the PR, but consider the full file context when relevant.
+    If you're reviewing a new file, disregard references to the full file context.
+
+    Begin your review now.
     """
 
     def __init__(self):
-        self.llm = get_llm()
+        self.llm = get_llm({"temperature": 0.5, "top_p": 1.0})
         self.parser = StrOutputParser()
 
-    def review_code(self, code, comments=None):
-        if comments:
-            prompt = self.HINTED_REVIEW_PROMPT
-            input_variables = {"code": code, "comments": comments}
-        else:
-            prompt = self.REVIEW_PROMPT
-            input_variables = {"code": code}
+    def review_code(self, changes):
+        prompt = self.REVIEW_PROMPT
+        custom_rules = get_config("custom_rules", "")
+        language = get_config("language", "english")
+
+        input_variables = {
+            "full_file_context": changes["file_content"],
+            "file_changes": changes["changes_in_file"],
+            "custom_rules": custom_rules,
+            "language": language,
+        }
 
         messages = [("system", self.SYSTEM_REVIEW_PROMPT), ("user", prompt)]
 

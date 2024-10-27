@@ -28,9 +28,9 @@ def _get_config_instance():
     return _config_instance
 
 
-def get(key, default=None):
+def get_config(key, default=None):
     config = _get_config_instance()
     return config.get(key, default)
 
 
-__all__ = ["get"]
+__all__ = ["get_config"]
