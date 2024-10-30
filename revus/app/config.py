@@ -8,7 +8,7 @@ _config_instance = None
 
 
 def _load_config():
-    config_path = os.path.join(os.getcwd(), "config.toml")
+    config_path = os.path.join(os.getcwd(), "revus.toml")
     if os.path.exists(config_path):
         try:
             with open(config_path, "r") as config_file:

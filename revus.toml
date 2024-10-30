@@ -1,6 +1,7 @@
 OPENAI_API_KEY = ""
 file_types = [".py"]
-language = "russian"
+model_name = "gpt-4o-mini"
+language = "English"
 exclude_paths = [
     "__init__.py"
 ]

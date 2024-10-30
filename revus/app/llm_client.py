@@ -14,7 +14,7 @@ def _initialize_llm(params=None):
 
     if not api_key:
         log_error(
-            "You need to create a config.toml file and add your OPENAI_API_KEY there."
+            "You need to create a revus.toml file and add your OPENAI_API_KEY there."
         )
         sys.exit(1)
     model_name = get_config("model_name", "gpt-4o-mini")
