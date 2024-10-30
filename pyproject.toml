@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "revus"
-version = "0.0.5"
+version = "0.0.1"
 description = "Automated PR Review Application using LLM"
 readme = "README.md"
 authors = ["Sergei Masiutin <sergeimasiutin@gmail.com>"]
