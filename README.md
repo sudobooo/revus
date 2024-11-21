@@ -23,6 +23,10 @@ Create a configuration file called `revus.toml` with the following parameters:
 
 ## Usage
 
+To view the help information for Revus, run:
+```bash
+revus --help
+```
 To review changes with Revus, first add modified files to staging:
 ```bash
 git add <file_name>
@@ -34,6 +38,10 @@ git add .
 Then, run the application in the project folder:
 ```bash
 revus
+```
+To review changes in a specific file or directory, use the -p option:
+```bash
+revus -p <path_to_file_or_directory>
 ```
 
 **Important**: Revus reviews each file individually, simplifying context management.
