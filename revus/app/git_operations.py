@@ -19,14 +19,10 @@ def get_file_changes():
     args = parse_cli_args()
     requested_path = args.path
 
-    if requested_path:
-        staged_files = [
-            file
-            for file in staged_files
-            if os.path.exists(file) and file.startswith(requested_path)
-        ]
-    else:
-        staged_files = [file for file in staged_files if os.path.exists(file)]
+    staged_files = [
+        file for file in staged_files
+        if os.path.exists(file) and (not requested_path or file.startswith(requested_path))
+    ]
 
     file_types = get_config("file_types", [".py"])
     exclude_paths = get_config("exclude_paths", [])
