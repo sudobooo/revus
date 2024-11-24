@@ -1,5 +1,6 @@
 # app/cli.py
 
+import argparse
 import xml.etree.ElementTree as ET
 from .logger import log_warning, console
 
@@ -56,3 +57,20 @@ def format_review_output(review):
     output.append(review_summary)
 
     return "\n".join(output)
+
+
+def parse_cli_args() -> argparse.Namespace:
+    """Parse CLI arguments to define a file or directory for automated review."""
+    parser = argparse.ArgumentParser(
+        description="Automated PR Review Application using LLM",
+    )
+
+    parser.add_argument(
+        "-p",
+        "--path",
+        type=str,
+        help="Path to a file or directory for review",
+        default=None,
+    )
+
+    return parser.parse_args()

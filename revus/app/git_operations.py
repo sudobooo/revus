@@ -5,16 +5,24 @@ import sys
 from git import Repo, InvalidGitRepositoryError, GitCommandError
 from .config import get_config
 from .logger import log_error
+from .cli import parse_cli_args
 
 
 def get_file_changes():
     try:
         repo = Repo(".")
         staged_files = {item.a_path for item in repo.index.diff("HEAD", staged=True)}
-        staged_files = [file for file in staged_files if os.path.exists(file)]
     except (InvalidGitRepositoryError, GitCommandError) as e:
         log_error(f"Error working with Git repository: {e}")
         return {}
+
+    args = parse_cli_args()
+    requested_path = args.path
+
+    staged_files = [
+        file for file in staged_files
+        if os.path.exists(file) and (not requested_path or file.startswith(requested_path))
+    ]
 
     file_types = get_config("file_types", [".py"])
     exclude_paths = get_config("exclude_paths", [])
