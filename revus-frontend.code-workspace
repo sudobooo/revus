@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../frontend"
+		},
+		{
+			"path": "../my-app"
+		},
+		{
+			"path": "../app"
+		}
+	],
+	"settings": {}
+}
