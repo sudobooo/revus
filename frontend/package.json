@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "cypress": "^13.16.1",
+    "final-form": "^4.20.4",
     "node": "^23.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
@@ -30,6 +31,7 @@
     "globals": "^15.12.0",
     "make": "^0.8.1",
     "prettier": "^3.4.2",
+    "react-final-form": "^6.5.9",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.15.0",
     "vite": "^6.0.1"
