@@ -1,12 +1,12 @@
-import './App.css';
 import ReviewCodeForm from './components/Pages/Main/Form/index';
+import styles from './index.module.css';
 
 function App() {
   return (
-    <>
-      <h1>Review your code with AI</h1>
+    <div className={styles.container}>
+      <div className={styles.h1}>Review your code with AI</div>
       <ReviewCodeForm />
-    </>
+    </div>
   );
 }
 
