@@ -43,3 +43,24 @@
   cursor: pointer;
   color: #5d5d62;
 }
+
+.submitButton {
+  display: inline-block;
+  width: fit-content;
+  height: fit-content;
+  padding: 10px 20px;
+  align-self: flex-end;
+  justify-self: flex-start;
+
+  font-size: medium;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+
+  background-color: darkblue;
+  color: white;
+
+  border-radius: 5px;
+  border: 0;
+  cursor: pointer;
+}
