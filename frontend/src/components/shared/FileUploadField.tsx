@@ -2,6 +2,7 @@ import { Field, FieldInputProps } from 'react-final-form';
 import styles from './FileUploadField.module.css';
 import FileUploadIcon from '../../../public/cloud.svg';
 import { useRef } from 'react';
+import { toast } from 'react-toastify';
 
 type PropsType = {
   uploadBoxTextState: { uploadBoxText: string; setUploadBoxText: React.Dispatch<React.SetStateAction<string>> };
@@ -33,19 +34,23 @@ const FileUploadField = (props: PropsType) => {
     const target = e.target as HTMLInputElement;
     let files = null;
 
-    if (target && target.files && target.files.length > 0) {
-      files = Array.from(target.files);
+    try {
+      if (target && target.files && target.files.length > 0) {
+        files = Array.from(target.files);
 
-      const newUploadBoxText = files?.reduce(
-        (acc, current) => (acc === '' ? current.name : acc + ', ' + current.name),
-        '',
-      );
-      setUploadBoxText(newUploadBoxText);
-    } else {
-      setUploadBoxText('No file chosen');
+        const newUploadBoxText = files?.reduce(
+          (acc, current) => (acc === '' ? current.name : acc + ', ' + current.name),
+          '',
+        );
+        setUploadBoxText(newUploadBoxText);
+      } else {
+        setUploadBoxText('No file chosen');
+      }
+
+      input.onChange(files);
+    } catch {
+      setUploadBoxText('An error occurred during file upload.');
     }
-
-    input.onChange(files);
   };
 
   const handleUpload = () => fileInputRef.current?.click();
@@ -53,18 +58,30 @@ const FileUploadField = (props: PropsType) => {
     e.preventDefault();
 
     if (fileInputRef.current) {
-      const files = Object.values(e.dataTransfer.files);
-      const filteredFilesArray = files.filter((file) => acceptExtensions?.includes(getFileExtension(file.name) ?? ''));
-      const filteredFiles = filteredFilesArray.length > 0 ? filteredFilesArray : null;
-
-      input.onChange(filteredFiles);
-
-      if (filteredFiles) {
-        const newUploadBoxText = filteredFiles.reduce(
-          (acc: string, current: any) => (acc === '' ? current.name : acc + ', ' + current.name),
-          '',
+      try {
+        const files = Object.values(e.dataTransfer.files);
+        const filteredFilesArray = files.filter((file) =>
+          acceptExtensions?.includes(getFileExtension(file.name) ?? ''),
         );
-        setUploadBoxText(newUploadBoxText);
+        const filteredFiles = filteredFilesArray.length > 0 ? filteredFilesArray : null;
+
+        if (!filteredFiles || filteredFilesArray.length !== files.length) {
+          toast.error('Th(is/ese) file(s) extension(s) is/are not supported');
+        }
+
+        input.onChange(filteredFiles);
+
+        if (filteredFiles) {
+          const newUploadBoxText = filteredFiles.reduce(
+            (acc: string, current: any) => (acc === '' ? current.name : acc + ', ' + current.name),
+            '',
+          );
+          setUploadBoxText(newUploadBoxText);
+        } else {
+          setUploadBoxText('No file chosen');
+        }
+      } catch {
+        setUploadBoxText('An error occurred during file upload.');
       }
     }
   };

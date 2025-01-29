@@ -4,8 +4,10 @@ import FileUploadField from '../../../shared/FileUploadField';
 import styles from './index.module.css';
 import copyIcon from '../../../../../public/copy.png';
 import checkIcon from '../../../../../public/check.svg';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-function ReviewCode() {
+function CodeReviewerForm() {
   const [review, setReview] = useState('');
   const [uploadBoxText, setUploadBoxText] = useState('No file chosen');
   const [copied, setCopied] = useState(false);
@@ -21,13 +23,17 @@ function ReviewCode() {
 
   const onSubmit = async (values: { code: File[] | null }) => {
     if (!values.code) {
-      throw new Error('Choose a file to review');
+      toast.error('Choose a file to review');
+      return;
     }
 
     const fileReadPromises = values.code.map((file) => {
       return new Promise<{ name: string; value: string }>((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => {
+          if (file.size === 0) {
+            reject(new Error(`File '${file.name}' is empty`));
+          }
           const codeString: string | ArrayBuffer | null = reader.result;
           if (typeof codeString === 'string') {
             resolve({ name: file.name, value: codeString });
@@ -40,12 +46,15 @@ function ReviewCode() {
       });
     });
 
-    const code = await Promise.all(fileReadPromises);
     let result: string = '';
     try {
+      const code = await Promise.all(fileReadPromises).catch((e) => {
+        throw e;
+      });
       result = reviewCodeThunk({ code }) ?? '';
       dispatch(result);
-    } catch {
+    } catch (e: any) {
+      toast.error(e.message);
       return;
     }
     setReview(result);
@@ -57,8 +66,10 @@ function ReviewCode() {
       setCopied(false);
       return;
     }
-    navigator.clipboard.writeText(review);
-    setCopied(true);
+    navigator.clipboard
+      .writeText(review)
+      .then(() => setCopied(true))
+      .catch((e) => toast.error(`Failed to copy text: ${e.message}`));
   };
 
   const formComponentProps = {
@@ -111,4 +122,4 @@ function ReviewCode() {
   );
 }
 
-export default ReviewCode;
+export default CodeReviewerForm;
