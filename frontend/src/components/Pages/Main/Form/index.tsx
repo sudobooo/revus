@@ -6,11 +6,13 @@ import copyIcon from '../../../../../public/copy.png';
 import checkIcon from '../../../../../public/check.svg';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useError } from '../../../ErrorBoundary';
 
 function CodeReviewerForm() {
   const [review, setReview] = useState('');
   const [uploadBoxText, setUploadBoxText] = useState('No file chosen');
   const [copied, setCopied] = useState(false);
+  const { reportError } = useError();
 
   const dispatch = (res: string) => res;
   const reviewCodeThunk = (values: { code: { name: string; value: string }[] }) => {
@@ -54,6 +56,9 @@ function CodeReviewerForm() {
       result = reviewCodeThunk({ code }) ?? '';
       dispatch(result);
     } catch (e: any) {
+      if (!e.response && !e.message?.includes('file')) {
+        reportError(e, { tag: 'frontend' });
+      }
       toast.error(e.message);
       return;
     }

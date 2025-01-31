@@ -3,6 +3,7 @@ import styles from './FileUploadField.module.css';
 import FileUploadIcon from '../../../public/cloud.svg';
 import { useRef } from 'react';
 import { toast } from 'react-toastify';
+import { useError } from '../ErrorBoundary';
 
 type PropsType = {
   uploadBoxTextState: { uploadBoxText: string; setUploadBoxText: React.Dispatch<React.SetStateAction<string>> };
@@ -24,11 +25,12 @@ const getFileExtension = (filename: string) => {
 const FileUploadField = (props: PropsType) => {
   const { name, label, accept, uploadBoxTextState, submitButton, ...rest } = props;
 
-  const acceptExtensions = accept ? accept.split(',') : [];
-
   const { uploadBoxText, setUploadBoxText } = uploadBoxTextState;
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { reportError } = useError();
+
+  const acceptExtensions = accept ? accept.split(',') : [];
 
   const onChange = (input: FieldInputProps<any, HTMLElement>) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
@@ -48,7 +50,10 @@ const FileUploadField = (props: PropsType) => {
       }
 
       input.onChange(files);
-    } catch {
+    } catch (e: any) {
+      if (!e.message?.includes('file')) {
+        reportError(e, { tag: 'frontend' });
+      }
       setUploadBoxText('An error occurred during file upload.');
     }
   };
@@ -80,7 +85,10 @@ const FileUploadField = (props: PropsType) => {
         } else {
           setUploadBoxText('No file chosen');
         }
-      } catch {
+      } catch (e: any) {
+        if (!e.message?.includes('file')) {
+          reportError(e, { tag: 'frontend' });
+        }
         setUploadBoxText('An error occurred during file upload.');
       }
     }
