@@ -14,3 +14,15 @@
     padding-bottom: 20px;
     text-align: center;
 }
+
+@media (max-width: 600px) {
+    .container {
+      padding: 1.5rem;
+      margin: 1rem auto;
+      width: 90%;
+    }
+  
+    .h1 {
+      font-size: 1.3rem;
+    }
+  }

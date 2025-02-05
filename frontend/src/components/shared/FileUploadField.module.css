@@ -27,6 +27,7 @@
     font-size: medium;
     text-transform: uppercase;
     font-weight: bold;
+    white-space: nowrap;
 
     cursor: pointer;
 }
@@ -52,6 +53,7 @@
     border-radius: 8px;
     width: 100%;
     padding: 1rem;
+    cursor: pointer;
 }
 
 .fileUploadIcon {
@@ -72,3 +74,10 @@
     justify-content: center;
     gap: 25px;
 }
+
+@media (max-width: 600px) {
+    .buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
