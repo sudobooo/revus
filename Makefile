@@ -9,3 +9,6 @@ lint-fix:
 
 lint-format:
 	poetry run ruff format .
+
+start-server:
+	python3 ./revus/run_api.py

@@ -24,6 +24,9 @@ langchain-openai = "^0.2.3"
 rich = "^13.5.2"
 python-dotenv = "^1.0.0"
 toml = "^0.10.2"
+fastapi = "^0.115.8"
+uvicorn = "^0.34.0"
+pydantic = "^2.10.6"
 
 [tool.poetry.scripts]
 revus = "revus.main:main"
