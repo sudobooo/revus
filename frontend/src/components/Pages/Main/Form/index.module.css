@@ -1,0 +1,65 @@
+.formContainer {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.form {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.error {
+  
+}
+
+.reviewContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f9fa;
+  border: 2px #cacfd4 solid;
+  border-radius: 8px;
+  width: 100%;
+  height: 100%;
+}
+
+.review {
+  padding: 1rem;
+}
+
+.copyButton {
+  display: flex;
+  gap: 5px;
+  align-self: flex-end;
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
+  border: 0;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  color: #5d5d62;
+}
+
+.submitButton {
+  display: inline-block;
+  width: fit-content;
+  height: fit-content;
+  padding: 10px 20px;
+  justify-self: flex-start;
+
+  font-size: medium;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+
+  background-color: darkblue;
+  color: white;
+
+  border-radius: 5px;
+  border: 0;
+  cursor: pointer;
+}

@@ -118,3 +118,6 @@ venv.bak/
 dmypy.json
 
 /.ruff_cache
+
+#vscode
+revus-frontend.code-workspace

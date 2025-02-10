@@ -1,0 +1,83 @@
+.fileInputContainer {
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+}
+
+.fileInput {
+    /* position: absolute;
+    opacity: 0;
+    z-index: -1; */
+    display: none;
+}
+
+.fileInputLabel {
+    display: inline-block;
+    padding: 10px 20px;
+    width: fit-content;
+    height: fit-content;
+
+    background-color: cornflowerblue;
+    color: white;
+
+    border: 0;
+    border-radius: 5px;
+
+    text-align: center;
+    font-size: medium;
+    text-transform: uppercase;
+    font-weight: bold;
+    white-space: nowrap;
+
+    cursor: pointer;
+}
+
+.fileNames {
+    width: fit-content;
+    font-size: large;
+    color: #647684;
+    padding: 10px 10px;
+    height: 30px;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.uploadBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e7eaef;
+    border: 2px #cacfd4 dashed;
+    border-radius: 8px;
+    width: 100%;
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.fileUploadIcon {
+    padding: 5px 5px;
+}
+
+.fileUploadContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    width: 100%;
+    align-items: center;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 25px;
+}
+
+@media (max-width: 600px) {
+    .buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
